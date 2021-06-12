@@ -11,3 +11,17 @@ workspace "DULib"
 	}
 
 include "tests"
+
+project "DULib"
+	kind "StaticLib"
+
+	includedirs
+	{
+		IncludeDir,
+	}
+
+	files 
+	{
+		IncludeDir.."/**.h",
+		IncludeDir.."/**.cpp"
+	}
