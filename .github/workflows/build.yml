@@ -21,12 +21,15 @@ jobs:
           tar -xf premake.tar.gz
           ./premake5 gmake2
       - name: Build
-        run: make config=Debug -j6
+        run: make config=debug -j6
       - name: Run tests
         run: ./bin/Debug-linux-x86_64/Tests/Tests.exe
   MSVC:
     runs-on: windows-latest
     name: MSVC
+    env:
+      VS_PATH: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\
+      MSBUILD_PATH: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\
     steps:
       - uses: actions/checkout@v2
       - name: Get submodules
