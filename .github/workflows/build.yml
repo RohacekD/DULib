@@ -23,7 +23,7 @@ jobs:
       - name: Build
         run: make config=debug -j6
       - name: Run tests
-        run: ./bin/Debug-linux-x86_64/Tests/Tests.exe
+        run: ./bin/Debug-linux-x86_64/Tests/Tests
   MSVC:
     runs-on: windows-latest
     name: MSVC
