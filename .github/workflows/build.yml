@@ -1,0 +1,48 @@
+name: build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  GCC:
+    runs-on: ubuntu-20.04
+      - uses: actions/checkout@v2
+      - uses: textbook/git-checkout-submodule-action@master
+      - name: Premake
+        run: |
+          wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha15/premake-5.0.0-alpha15-linux.tar.gz -O premake.tar.gz
+          tar -xf premake.tar.gz
+          ./premake5 gmake2
+      - name: Build
+        run: make config=Debug -j6
+      - name: Run tests
+        run: ./bin/Debug-linux-x86_64/Tests/Tests.exe
+  MSVC:
+    runs-on: windows-latest
+    name: MSVC
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get submodules
+        shell: cmd
+        run: |
+          git submodule init
+          git submodule update
+      - name: Get premake5
+        shell: powershell
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/premake/premake-core/releases/download/v5.0.0-alpha15/premake-5.0.0-alpha15-windows.zip" -OutFile "premake.zip"
+          Expand-Archive -Path premake.zip
+      - name: Generate solution
+        shell: cmd
+        run: premake\premake5.exe vs2019
+      - name: Build
+        shell: cmd
+        run: '"%MSBUILD_PATH%\MSBuild.exe" DULib.sln /p:Configuration=Debug'
+      - name: Run tests
+        run: ./bin/Debug-windows-x86_64/Tests/Tests.exe
