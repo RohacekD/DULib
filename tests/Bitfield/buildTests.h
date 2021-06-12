@@ -1,4 +1,7 @@
 #include <DULib/BitField.h>
+
+// this file should test just static_asserts
+
 #include <cstdint>
 
 enum class E_TestEnum : std::uint8_t
@@ -11,7 +14,7 @@ enum class E_TestEnum : std::uint8_t
 
 static_assert(sizeof(DULib::BitField<E_TestEnum>) == sizeof(std::uint8_t));
 
-int main()
-{
-	return 0;
-}
+// #TODO: test all 
+// template <> struct enable_BitField_operators<E_TestEnum> {
+// static constexpr bool enable = true;
+// };
