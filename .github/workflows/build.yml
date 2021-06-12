@@ -2,9 +2,9 @@ name: build
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -21,12 +21,19 @@ jobs:
           tar -xf premake.tar.gz
           ./premake5 gmake2
       - name: Build
-        run: make config=Debug -j6
+        run: make config=debug -j6
       - name: Run tests
-        run: ./bin/Debug-linux-x86_64/Tests/Tests.exe
+        run: ./bin/Debug-linux-x86_64/Tests/Tests
+      - name: Publish to coveralls.io
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{ github.token }}
   MSVC:
     runs-on: windows-latest
     name: MSVC
+    env:
+      VS_PATH: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\
+      MSBUILD_PATH: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\
     steps:
       - uses: actions/checkout@v2
       - name: Get submodules
