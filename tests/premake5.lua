@@ -16,3 +16,9 @@ project "Tests"
 		"**.h",
 		"**.cpp"
 	}
+
+	filter "system:linux"
+		links {"gcov"}
+
+		buildoptions {"-fprofile-arcs", "-ftest-coverage", "--coverage"}
+		linkoptions { "--coverage" }
