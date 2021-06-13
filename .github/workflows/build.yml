@@ -24,10 +24,15 @@ jobs:
         run: make config=debug -j6
       - name: Run tests
         run: ./bin/Debug-linux-x86_64/Tests/Tests
+      - name: a
+        run: |
+          pip install --user cpp-coveralls
+          cpp-coveralls --gcov-options '\-o ./obj/Debug-linux-x86_64/Tests/tests'
       - name: Publish to coveralls.io
         uses: coverallsapp/github-action@v1.1.2
         with:
           github-token: ${{ github.token }}
+          
   MSVC:
     runs-on: windows-latest
     name: MSVC
