@@ -2,6 +2,8 @@
 
 #include <type_traits>
 
+#include <cstdio>
+
 namespace DULib {
 template <class Enum, typename = typename std::enable_if<std::is_enum<Enum>::value>::type>
 class BitField {
@@ -9,42 +11,42 @@ class BitField {
 
 public:
 	template <typename = typename std::is_integral<value_type>::type>
-	BitField()
+	BitField() noexcept
 		: m_Flags(0)
 	{
 	}
 
-	constexpr BitField(const Enum bit)
+	constexpr BitField(const Enum bit) noexcept
 		: m_Flags(static_cast<value_type>(bit))
 	{
 	}
 
-	constexpr BitField(const std::initializer_list<Enum>& values)
+	constexpr BitField(const std::initializer_list<Enum>& values) noexcept
 		: m_Flags(0)
 	{
 		SetFlags(values);
 	}
 
 
-	constexpr BitField(const BitField& other)
+	constexpr BitField(const BitField& other) noexcept
 		: m_Flags(other.m_Flags)
 	{
 	}
 
-	constexpr BitField(const BitField&& other)
+	constexpr BitField(const BitField&& other) noexcept
 		: m_Flags(other.m_Flags)
 	{
 	}
 
 	~BitField() = default;
 
-	[[nodiscard]] constexpr bool CheckFlag(const Enum flag) const { return !!(static_cast<value_type>(flag) & m_Flags); }
+	[[nodiscard]] constexpr bool CheckFlag(const Enum flag) const noexcept { return !!(static_cast<value_type>(flag) & m_Flags); }
 
-	constexpr void SetFlag(const Enum flag) { m_Flags |= static_cast<value_type>(flag); }
+	constexpr void SetFlag(const Enum flag) noexcept { m_Flags |= static_cast<value_type>(flag); }
 
-	constexpr void SetFlags(const BitField& field) { m_Flags |= field.GetFlags(); }
+	constexpr void SetFlags(const BitField& field) noexcept { m_Flags |= field.GetFlags(); }
 
-	constexpr void SetFlags(const std::initializer_list<Enum>& values)
+	constexpr void SetFlags(const std::initializer_list<Enum>& values) noexcept
 	{
 		for (const auto e : values)
 		{
@@ -52,9 +54,9 @@ public:
 		}
 	}
 
-	constexpr void ClearFlag(const Enum flag) { m_Flags &= ~static_cast<value_type>(flag); }
+	constexpr void ClearFlag(const Enum flag) noexcept { m_Flags &= ~static_cast<value_type>(flag); }
 
-	constexpr void ClearFlags(const std::initializer_list<Enum>& values)
+	constexpr void ClearFlags(const std::initializer_list<Enum>& values) noexcept
 	{
 		for (const auto e : values)
 		{
@@ -62,38 +64,38 @@ public:
 		}
 	}
 
-	constexpr void ToggleFlag(const Enum flag) { m_Flags ^= static_cast<value_type>(flag); }
+	constexpr void ToggleFlag(const Enum flag) noexcept { m_Flags ^= static_cast<value_type>(flag); }
 
-	BitField& operator|=(const Enum bit) { return (this = this | bit); }
+	BitField& operator|=(const Enum bit) noexcept { return (this = this | bit); }
 
-	[[nodiscard]] BitField operator|(const BitField bit) const
+	[[nodiscard]] BitField operator|(const BitField bit) const noexcept
 	{
 		BitField ret(*this);
 		ret.SetFlags(bit);
 		return ret;
 	}
 
-	BitField& operator&=(const Enum bit) { return (this = this & bit); }
+	BitField& operator&=(const Enum bit) noexcept { return (this = this & bit); }
 
-	[[nodiscard]] BitField& operator=(const value_type& value)
+	[[nodiscard]] BitField& operator=(const value_type& value) noexcept
 	{
 		m_Flags = value;
 		return *this;
 	}
 
-	BitField& operator=(const BitField& other)
+	BitField& operator=(const BitField& other) noexcept
 	{
 		m_Flags = other.m_Flags;
 		return *this;
 	}
 
-	[[nodiscard]] bool operator&(const Enum bit) const { return CheckFlag(bit); }
+	[[nodiscard]] bool operator&(const Enum bit) const noexcept { return CheckFlag(bit); }
 
-	[[nodiscard]] operator const Enum() const { return m_Flags; }
+	[[nodiscard]] operator const Enum() const noexcept { return m_Flags; }
 
-	[[nodiscard]] operator Enum&() { return m_Flags; }
+	[[nodiscard]] operator Enum&() noexcept { return m_Flags; }
 
-	[[nodiscard]] value_type GetFlags() const { return m_Flags; }
+	[[nodiscard]] value_type GetFlags() const noexcept { return m_Flags; }
 protected:
 	value_type m_Flags;
 };
