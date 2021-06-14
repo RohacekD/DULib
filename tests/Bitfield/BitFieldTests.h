@@ -121,5 +121,58 @@ TEST_CASE("Bit fields", "[BitField]") {
 		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag3));
 		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag4));
 	}
+
+	SECTION("operator|=(enum)") {
+		e |= E_TestEnum::flag1;
+		REQUIRE(e.CheckFlag(E_TestEnum::flag1));
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag2));
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag3));
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag4));
+	}
+
+	SECTION("operator|(enum)") {
+		const auto e2 = e | E_TestEnum::flag1;
+		REQUIRE(e2.CheckFlag(E_TestEnum::flag1));
+		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag2));
+		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag3));
+		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag4));
+	}
+
+	SECTION("operator&=(enum)") {
+		e &= E_TestEnum::flag1;
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag1));
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag2));
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag3));
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag4));
+		e.SetFlag(E_TestEnum::flag1);
+		e &= E_TestEnum::flag1;
+		REQUIRE(e.CheckFlag(E_TestEnum::flag1));
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag2));
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag3));
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag4));
+	}
+
+	SECTION("operator&(enum)") {
+		REQUIRE_FALSE(e & E_TestEnum::flag1);
+		e.SetFlag(E_TestEnum::flag1);
+		REQUIRE(e & E_TestEnum::flag1);
+		REQUIRE_FALSE(e & E_TestEnum::flag2);
+		REQUIRE_FALSE(e & E_TestEnum::flag3);
+		REQUIRE_FALSE(e & E_TestEnum::flag4);
+	}
+
+	SECTION("operator&(BitField)") {
+	  const auto e2 = e & BitField<E_TestEnum>(E_TestEnum::flag1);
+	  REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag1));
+	  REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag2));
+	  REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag3));
+	  REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag4));
+	  e.SetFlag(E_TestEnum::flag1);
+	  const auto e3 = e & BitField<E_TestEnum>(E_TestEnum::flag1);
+	  REQUIRE(e3.CheckFlag(E_TestEnum::flag1));
+	  REQUIRE_FALSE(e3.CheckFlag(E_TestEnum::flag2));
+	  REQUIRE_FALSE(e3.CheckFlag(E_TestEnum::flag3));
+	  REQUIRE_FALSE(e3.CheckFlag(E_TestEnum::flag4));
+	}
 }
 }

@@ -66,7 +66,7 @@ public:
 
 	constexpr void ToggleFlag(const Enum flag) noexcept { m_Flags ^= static_cast<value_type>(flag); }
 
-	BitField& operator|=(const Enum bit) noexcept { return (this = this | bit); }
+	BitField& operator|=(const Enum bit) noexcept { return (*this = *this | bit); }
 
 	[[nodiscard]] BitField operator|(const BitField bit) const noexcept
 	{
@@ -75,7 +75,18 @@ public:
 		return ret;
 	}
 
-	BitField& operator&=(const Enum bit) noexcept { return (this = this & bit); }
+	BitField& operator&=(const Enum bit) noexcept {
+		m_Flags &= static_cast<value_type>(bit);
+		return (*this);
+	}
+
+	[[nodiscard]] BitField operator&(const BitField& other) const noexcept {
+		BitField ret(*this);
+		ret.m_Flags &= other.m_Flags;
+		return ret;
+	}
+
+	[[nodiscard]] bool operator&(const Enum bit) const noexcept { return CheckFlag(bit); }
 
 	[[nodiscard]] BitField& operator=(const value_type& value) noexcept
 	{
@@ -89,7 +100,8 @@ public:
 		return *this;
 	}
 
-	[[nodiscard]] bool operator&(const Enum bit) const noexcept { return CheckFlag(bit); }
+	// #TODO operator&(const bitfield bit)
+	// #TODO bool()
 
 	[[nodiscard]] operator const Enum() const noexcept { return m_Flags; }
 
