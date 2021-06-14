@@ -29,10 +29,10 @@ jobs:
           COVERALLS_REPO_TOKEN="${{ secrets.GITHUB_TOKEN }}"
           pip install --user cpp-coveralls
           cpp-coveralls -r $(pwd) -i include -b $(pwd)/tests/ --exclude "/usr/*" --exclude-pattern $(pwd)/vendor/ --gcov-options '\-o $(pwd) -lp'
-      - name: Publish to coveralls.io
-        uses: coverallsapp/github-action@v1.1.2
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Publish to coveralls.io
+#        uses: coverallsapp/github-action@v1.1.2
+#        with:
+#          github-token: ${{ secrets.GITHUB_TOKEN }}
           
   MSVC:
     runs-on: windows-latest
