@@ -162,17 +162,44 @@ TEST_CASE("Bit fields", "[BitField]") {
 	}
 
 	SECTION("operator&(BitField)") {
-	  const auto e2 = e & BitField<E_TestEnum>(E_TestEnum::flag1);
-	  REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag1));
-	  REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag2));
-	  REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag3));
-	  REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag4));
-	  e.SetFlag(E_TestEnum::flag1);
-	  const auto e3 = e & BitField<E_TestEnum>(E_TestEnum::flag1);
-	  REQUIRE(e3.CheckFlag(E_TestEnum::flag1));
-	  REQUIRE_FALSE(e3.CheckFlag(E_TestEnum::flag2));
-	  REQUIRE_FALSE(e3.CheckFlag(E_TestEnum::flag3));
-	  REQUIRE_FALSE(e3.CheckFlag(E_TestEnum::flag4));
+		const auto e2 = e & BitField<E_TestEnum>(E_TestEnum::flag1);
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag1));
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag2));
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag3));
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag4));
+		e.SetFlag(E_TestEnum::flag1);
+		const auto e3 = e & BitField<E_TestEnum>(E_TestEnum::flag1);
+		REQUIRE(e3.CheckFlag(E_TestEnum::flag1));
+		REQUIRE_FALSE(e3.CheckFlag(E_TestEnum::flag2));
+		REQUIRE_FALSE(e3.CheckFlag(E_TestEnum::flag3));
+		REQUIRE_FALSE(e3.CheckFlag(E_TestEnum::flag4));
+	}
+
+	SECTION("operator=(value_type)") {
+		BitField<E_TestEnum> e2;
+		e2 = 6;
+		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag1));
+		REQUIRE(e2.CheckFlag(E_TestEnum::flag2));
+		REQUIRE(e2.CheckFlag(E_TestEnum::flag3));
+		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag4));
+	}
+
+
+	SECTION("operator=(value_type)") {
+		e.SetFlag(E_TestEnum::flag2);
+		e.SetFlag(E_TestEnum::flag3);
+		BitField<E_TestEnum> e2;
+		e2 = e;
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag1));
+		REQUIRE(e.CheckFlag(E_TestEnum::flag2));
+		REQUIRE(e.CheckFlag(E_TestEnum::flag3));
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag4));
+	}
+
+	SECTION("bool()") {
+		REQUIRE_FALSE(static_cast<bool>(e));
+		e.SetFlag(E_TestEnum::flag1);
+		REQUIRE(static_cast<bool>(e));
 	}
 }
 }
