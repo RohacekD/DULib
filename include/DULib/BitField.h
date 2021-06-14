@@ -100,12 +100,7 @@ public:
 		return *this;
 	}
 
-	// #TODO operator&(const bitfield bit)
-	// #TODO bool()
-
-	[[nodiscard]] operator const Enum() const noexcept { return m_Flags; }
-
-	[[nodiscard]] operator Enum&() noexcept { return m_Flags; }
+	[[nodiscard]] operator const bool() const noexcept { return m_Flags != 0; }
 
 	[[nodiscard]] value_type GetFlags() const noexcept { return m_Flags; }
 protected:
