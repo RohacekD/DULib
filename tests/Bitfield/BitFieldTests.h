@@ -37,6 +37,34 @@ TEST_CASE("Bit fields", "[BitField]") {
 		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag4));
 	}
 
+	SECTION("BitField(initializer_list)") {
+		BitField<E_TestEnum> e2({ E_TestEnum::flag2, E_TestEnum::flag1 });
+		REQUIRE(e2.CheckFlag(E_TestEnum::flag1)); //<!!!!!!!!
+		REQUIRE(e2.CheckFlag(E_TestEnum::flag2)); //<!!!!!!!!
+		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag3));
+		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag4));
+	}
+
+	SECTION("BitField(BitField&)") {
+		e.SetFlag(E_TestEnum::flag1);
+		BitField<E_TestEnum> e2(e);
+		REQUIRE(e2.CheckFlag(E_TestEnum::flag1)); //<!!!!!!!!
+		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag2));
+		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag3));
+		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag4));
+	}
+
+	SECTION("BitField(BitField&&)") {
+		e.SetFlag(E_TestEnum::flag1);
+		BitField<E_TestEnum> e2(std::move(e));
+
+
+		REQUIRE(e2.CheckFlag(E_TestEnum::flag1)); //<!!!!!!!!
+		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag2));
+		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag3));
+		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag4));
+	}
+
 	SECTION("SetFlag(enum)") {
 		e.SetFlag(E_TestEnum::flag2);
 		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag1));
@@ -55,6 +83,30 @@ TEST_CASE("Bit fields", "[BitField]") {
 		REQUIRE(e.CheckFlag(E_TestEnum::flag2));
 		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag3));
 		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag4));
+	}
+
+	SECTION("SetFlags(initializer_list)") {
+		e.SetFlags({ E_TestEnum::flag2, E_TestEnum::flag1 });
+		REQUIRE(e.CheckFlag(E_TestEnum::flag1));
+		REQUIRE(e.CheckFlag(E_TestEnum::flag2));
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag3));
+		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag4));
+
+		SECTION("ClearFlag(enum)") {
+			e.ClearFlag(E_TestEnum::flag2);
+			REQUIRE(e.CheckFlag(E_TestEnum::flag1));
+			REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag2));
+			REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag3));
+			REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag4));
+		}
+
+		SECTION("ClearFlags(initializer_list)") {
+		  e.ClearFlags({ E_TestEnum::flag2, E_TestEnum::flag1, E_TestEnum::flag3 });
+		  REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag1));
+		  REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag2));
+		  REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag3));
+		  REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag4));
+		}
 	}
 
 	SECTION("ToggleFlag(enum)") {
