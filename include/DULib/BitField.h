@@ -42,7 +42,7 @@ public:
 
 	constexpr void SetFlag(const Enum flag) { m_Flags |= static_cast<value_type>(flag); }
 
-	constexpr void SetFlags(const BitField& field) { m_Flags &= field.GetFlags(); }
+	constexpr void SetFlags(const BitField& field) { m_Flags |= field.GetFlags(); }
 
 	constexpr void SetFlags(const std::initializer_list<Enum>& values)
 	{
