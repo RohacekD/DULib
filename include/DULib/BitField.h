@@ -88,7 +88,7 @@ public:
 
 	[[nodiscard]] bool operator&(const Enum bit) const noexcept { return CheckFlag(bit); }
 
-	[[nodiscard]] BitField& operator=(const value_type& value) noexcept
+	BitField& operator=(const value_type& value) noexcept
 	{
 		m_Flags = value;
 		return *this;
