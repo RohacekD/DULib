@@ -184,7 +184,6 @@ TEST_CASE("Bit fields", "[BitField]") {
 		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag4));
 	}
 
-
 	SECTION("operator=(value_type)") {
 		e.SetFlag(E_TestEnum::flag2);
 		e.SetFlag(E_TestEnum::flag3);
@@ -216,7 +215,6 @@ TEST_CASE("Bit fields", "[BitField]") {
 		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag4));
 	}
 
-	
 	SECTION("operator^(BitField)") {
 		BitField<E_TestEnum> e2;
 		const auto e3 = e2 ^ e; // 0^0 => 0
@@ -235,6 +233,28 @@ TEST_CASE("Bit fields", "[BitField]") {
 		REQUIRE_FALSE(e5.CheckFlag(E_TestEnum::flag2));
 		REQUIRE_FALSE(e5.CheckFlag(E_TestEnum::flag3));
 		REQUIRE_FALSE(e5.CheckFlag(E_TestEnum::flag4));
+	}
+
+	//SECTION("all()") {
+	//	REQUIRE_FALSE(e.all());
+	//	e.SetFlag(E_TestEnum::flag3);
+	//	REQUIRE_FALSE(e.all());
+	//	e.SetFlag(E_TestEnum::flag1);
+	//	e.SetFlag(E_TestEnum::flag2);
+	//	e.SetFlag(E_TestEnum::flag4);
+	//	REQUIRE(e.all());
+	//}
+
+	SECTION("any()") {
+		REQUIRE_FALSE(e.any());
+		e.SetFlag(E_TestEnum::flag3);
+		REQUIRE(e.any());
+	}
+
+	SECTION("none()") {
+		REQUIRE(e.none());
+		e.SetFlag(E_TestEnum::flag3);
+		REQUIRE_FALSE(e.none());
 	}
 
 	SECTION("bool()") {

@@ -113,9 +113,12 @@ public:
 
 
 	// #TODO operator~
-	// #TODO none, all... etc
 
 	[[nodiscard]] operator const bool() const noexcept { return m_Flags != 0; }
+
+	// Checks
+	[[nodiscard]] constexpr bool any() const noexcept { return !none(); }
+	[[nodiscard]] constexpr bool none() const noexcept { return m_Flags == 0; }
 
 	[[nodiscard]] value_type GetFlags() const noexcept { return m_Flags; }
 protected:
