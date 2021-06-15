@@ -100,6 +100,21 @@ public:
 		return *this;
 	}
 
+	BitField& operator^=(const BitField other) noexcept {
+		m_Flags ^= other.m_Flags;
+		return *this;
+	}
+
+	[[nodiscard]] BitField operator^(const BitField& other) const noexcept {
+		BitField ret(*this);
+		ret.m_Flags ^= other.m_Flags;
+		return ret;
+	}
+
+
+	// #TODO operator~
+	// #TODO none, all... etc
+
 	[[nodiscard]] operator const bool() const noexcept { return m_Flags != 0; }
 
 	[[nodiscard]] value_type GetFlags() const noexcept { return m_Flags; }
