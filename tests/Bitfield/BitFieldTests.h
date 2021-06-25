@@ -15,6 +15,16 @@ enum class E_TestEnum : std::uint8_t
   flag3 = 4,
   flag4 = 8,
 };
+
+template<>
+struct DULib::BitField_UsedBitsCounter<E_TestEnum> {
+  static constexpr std::size_t usedBits = 4;
+};
+
+template <> struct DULib::enable_BitField_operators<E_TestEnum>  {
+  static constexpr bool enable = true;
+};
+
 namespace DULib {
 TEST_CASE("Bit fields", "[BitField]") {
 	// start with default ctor
@@ -235,15 +245,15 @@ TEST_CASE("Bit fields", "[BitField]") {
 		REQUIRE_FALSE(e5.CheckFlag(E_TestEnum::flag4));
 	}
 
-	//SECTION("all()") {
-	//	REQUIRE_FALSE(e.all());
-	//	e.SetFlag(E_TestEnum::flag3);
-	//	REQUIRE_FALSE(e.all());
-	//	e.SetFlag(E_TestEnum::flag1);
-	//	e.SetFlag(E_TestEnum::flag2);
-	//	e.SetFlag(E_TestEnum::flag4);
-	//	REQUIRE(e.all());
-	//}
+	SECTION("all()") {
+		REQUIRE_FALSE(e.all());
+		e.SetFlag(E_TestEnum::flag3);
+		REQUIRE_FALSE(e.all());
+		e.SetFlag(E_TestEnum::flag1);
+		e.SetFlag(E_TestEnum::flag2);
+		e.SetFlag(E_TestEnum::flag4);
+		REQUIRE(e.all());
+	}
 
 	SECTION("any()") {
 		REQUIRE_FALSE(e.any());

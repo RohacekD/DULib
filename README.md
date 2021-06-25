@@ -19,6 +19,13 @@ enum class E_TestEnum : std::uint8_t
   flag4 = 8,
 };
 
+// For some operation BitField needs to know how many bits do you actually use from given type
+// e.g. all()
+template<>
+struct DULib::BitField_UsedBitsCounter<E_TestEnum> {
+  static constexpr std::size_t usedBits = 4;
+};
+
 static_assert(sizeof(DULib::BitField<E_TestEnum>) == sizeof(std::uint8_t));
 // allows binary operations on enum class, not mandatory
 template <> struct DULib::enable_BitField_operators<E_TestEnum> {
