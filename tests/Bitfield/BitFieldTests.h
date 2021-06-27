@@ -245,6 +245,11 @@ TEST_CASE("Bit fields", "[BitField]") {
 		REQUIRE_FALSE(e5.CheckFlag(E_TestEnum::flag4));
 	}
 
+	SECTION("operator~()") {
+		REQUIRE((~e).all() == true);
+		REQUIRE((~e).GetFlags() == 15); // only first 4 bits should be set to 1
+	}
+
 	SECTION("all()") {
 		REQUIRE_FALSE(e.all());
 		e.SetFlag(E_TestEnum::flag3);

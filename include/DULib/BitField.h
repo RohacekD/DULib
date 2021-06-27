@@ -130,14 +130,21 @@ public:
 		return ret;
 	}
 
+	constexpr BitField operator~() const noexcept{
+		constexpr auto mask = GetMaskForUnusedBits();
+		// unused bits should be set to 0 all the time so 
+		// negating them and than xoring with mask should set them back to false
 
-	// #TODO operator~
+		BitField ret(*this);
+		ret.m_Flags = (~m_Flags) ^ mask;
+		return ret;
+	}
 
 	[[nodiscard]] operator const bool() const noexcept { return m_Flags != 0; }
 
 	// Checks
 	[[nodiscard]] constexpr bool all() const noexcept {
-		constexpr auto mask = static_cast<value_type>(~((static_cast<value_type>(1u)<<(usedBits))-1u));
+		constexpr auto mask = GetMaskForUnusedBits();
 		return static_cast<value_type>(~(m_Flags^mask)) == 0;
 	}
 	[[nodiscard]] constexpr bool any() const noexcept { return !none(); }
@@ -147,6 +154,11 @@ public:
 protected:
 	value_type m_Flags;
 private:
+	constexpr static value_type GetMaskForUnusedBits() {
+		// todo consteval for C++20 ?
+		return static_cast<value_type>(~((static_cast<value_type>(1u) << (usedBits)) - 1u));;
+	}
+
 	template <typename T>
 	class HasNumBitsDefined
 	{
