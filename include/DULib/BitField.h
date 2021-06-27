@@ -30,7 +30,7 @@ class BitField {
 
 public:
 	template <typename = typename std::is_integral<value_type>::type>
-	BitField() noexcept
+	constexpr BitField() noexcept
 		: m_Flags(0)
 	{
 	}
@@ -85,52 +85,52 @@ public:
 
 	constexpr void ToggleFlag(const Enum flag) noexcept { m_Flags ^= static_cast<value_type>(flag); }
 
-	BitField& operator|=(const Enum bit) noexcept { return (*this = *this | bit); }
+	constexpr BitField& operator|=(const Enum bit) noexcept { return (*this = *this | bit); }
 
-	[[nodiscard]] BitField operator|(const BitField bit) const noexcept
+	[[nodiscard]] constexpr BitField operator|(const BitField bit) const noexcept
 	{
 		BitField ret(*this);
 		ret.SetFlags(bit);
 		return ret;
 	}
 
-	BitField& operator&=(const Enum bit) noexcept {
+	constexpr BitField& operator&=(const Enum bit) noexcept {
 		m_Flags &= static_cast<value_type>(bit);
 		return (*this);
 	}
 
-	[[nodiscard]] BitField operator&(const BitField& other) const noexcept {
+	[[nodiscard]] constexpr BitField operator&(const BitField& other) const noexcept {
 		BitField ret(*this);
 		ret.m_Flags &= other.m_Flags;
 		return ret;
 	}
 
-	[[nodiscard]] bool operator&(const Enum bit) const noexcept { return CheckFlag(bit); }
+	[[nodiscard]] constexpr bool operator&(const Enum bit) const noexcept { return CheckFlag(bit); }
 
-	BitField& operator=(const value_type& value) noexcept
+	constexpr BitField& operator=(const value_type& value) noexcept
 	{
 		m_Flags = value;
 		return *this;
 	}
 
-	BitField& operator=(const BitField& other) noexcept
+	constexpr BitField& operator=(const BitField& other) noexcept
 	{
 		m_Flags = other.m_Flags;
 		return *this;
 	}
 
-	BitField& operator^=(const BitField other) noexcept {
+	constexpr BitField& operator^=(const BitField other) noexcept {
 		m_Flags ^= other.m_Flags;
 		return *this;
 	}
 
-	[[nodiscard]] BitField operator^(const BitField& other) const noexcept {
+	[[nodiscard]] constexpr BitField operator^(const BitField& other) const noexcept {
 		BitField ret(*this);
 		ret.m_Flags ^= other.m_Flags;
 		return ret;
 	}
 
-	constexpr BitField operator~() const noexcept{
+	[[nodiscard]] constexpr BitField operator~() const noexcept{
 		constexpr auto mask = GetMaskForUnusedBits();
 		// unused bits should be set to 0 all the time so 
 		// negating them and than xoring with mask should set them back to false
@@ -140,7 +140,7 @@ public:
 		return ret;
 	}
 
-	[[nodiscard]] operator const bool() const noexcept { return m_Flags != 0; }
+	[[nodiscard]] constexpr operator const bool() const noexcept { return m_Flags != 0; }
 
 	// Checks
 	[[nodiscard]] constexpr bool all() const noexcept {
