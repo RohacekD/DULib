@@ -150,6 +150,11 @@ public:
 	[[nodiscard]] constexpr bool any() const noexcept { return !none(); }
 	[[nodiscard]] constexpr bool none() const noexcept { return m_Flags == 0; }
 
+	constexpr BitField& flip() {
+		*this = this->operator~();
+		return *this;
+	}
+
 	[[nodiscard]] value_type GetFlags() const noexcept { return m_Flags; }
 protected:
 	value_type m_Flags;
