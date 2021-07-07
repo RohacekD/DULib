@@ -7,6 +7,7 @@
 // this file should test just static_asserts
 
 #include <cstdint>
+#include <sstream>
 
 enum class E_TestEnum : std::uint8_t
 {
@@ -25,10 +26,9 @@ template <> struct DULib::enable_BitField_operators<E_TestEnum>  {
   static constexpr bool enable = true;
 };
 
-namespace DULib {
 TEST_CASE("Bit fields", "[BitField]") {
 	// start with default ctor
-	BitField<E_TestEnum> e;
+	DULib::BitField<E_TestEnum> e;
 
 	// default ctor should init bit field to all 0
 	REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag1));
@@ -40,7 +40,7 @@ TEST_CASE("Bit fields", "[BitField]") {
 
 
 	SECTION("BitField(Enum)") {
-		BitField<E_TestEnum> e2(E_TestEnum::flag2);
+		DULib::BitField<E_TestEnum> e2(E_TestEnum::flag2);
 		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag1));
 		REQUIRE(e2.CheckFlag(E_TestEnum::flag2)); //<!!!!!!!!
 		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag3));
@@ -48,7 +48,7 @@ TEST_CASE("Bit fields", "[BitField]") {
 	}
 
 	SECTION("BitField(initializer_list)") {
-		BitField<E_TestEnum> e2({ E_TestEnum::flag2, E_TestEnum::flag1 });
+		DULib::BitField<E_TestEnum> e2({ E_TestEnum::flag2, E_TestEnum::flag1 });
 		REQUIRE(e2.CheckFlag(E_TestEnum::flag1)); //<!!!!!!!!
 		REQUIRE(e2.CheckFlag(E_TestEnum::flag2)); //<!!!!!!!!
 		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag3));
@@ -57,7 +57,7 @@ TEST_CASE("Bit fields", "[BitField]") {
 
 	SECTION("BitField(BitField&)") {
 		e.SetFlag(E_TestEnum::flag1);
-		BitField<E_TestEnum> e2(e);
+		DULib::BitField<E_TestEnum> e2(e);
 		REQUIRE(e2.CheckFlag(E_TestEnum::flag1)); //<!!!!!!!!
 		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag2));
 		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag3));
@@ -66,7 +66,7 @@ TEST_CASE("Bit fields", "[BitField]") {
 
 	SECTION("BitField(BitField&&)") {
 		e.SetFlag(E_TestEnum::flag1);
-		BitField<E_TestEnum> e2(std::move(e));
+		DULib::BitField<E_TestEnum> e2(std::move(e));
 
 
 		REQUIRE(e2.CheckFlag(E_TestEnum::flag1)); //<!!!!!!!!
@@ -84,7 +84,7 @@ TEST_CASE("Bit fields", "[BitField]") {
 	}
 
 	SECTION("SetFlags(BitField)") {
-		BitField<E_TestEnum> e2(E_TestEnum::flag2);
+		DULib::BitField<E_TestEnum> e2(E_TestEnum::flag2);
 		e2.SetFlag(E_TestEnum::flag1);
 		REQUIRE(e2.CheckFlag(E_TestEnum::flag1));
 		REQUIRE(e2.CheckFlag(E_TestEnum::flag2));
@@ -172,13 +172,13 @@ TEST_CASE("Bit fields", "[BitField]") {
 	}
 
 	SECTION("operator&(BitField)") {
-		const auto e2 = e & BitField<E_TestEnum>(E_TestEnum::flag1);
+		const auto e2 = e & DULib::BitField<E_TestEnum>(E_TestEnum::flag1);
 		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag1));
 		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag2));
 		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag3));
 		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag4));
 		e.SetFlag(E_TestEnum::flag1);
-		const auto e3 = e & BitField<E_TestEnum>(E_TestEnum::flag1);
+		const auto e3 = e & DULib::BitField<E_TestEnum>(E_TestEnum::flag1);
 		REQUIRE(e3.CheckFlag(E_TestEnum::flag1));
 		REQUIRE_FALSE(e3.CheckFlag(E_TestEnum::flag2));
 		REQUIRE_FALSE(e3.CheckFlag(E_TestEnum::flag3));
@@ -186,7 +186,7 @@ TEST_CASE("Bit fields", "[BitField]") {
 	}
 
 	SECTION("operator=(value_type)") {
-		BitField<E_TestEnum> e2;
+		DULib::BitField<E_TestEnum> e2;
 		e2 = 6;
 		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag1));
 		REQUIRE(e2.CheckFlag(E_TestEnum::flag2));
@@ -197,7 +197,7 @@ TEST_CASE("Bit fields", "[BitField]") {
 	SECTION("operator=(value_type)") {
 		e.SetFlag(E_TestEnum::flag2);
 		e.SetFlag(E_TestEnum::flag3);
-		BitField<E_TestEnum> e2;
+		DULib::BitField<E_TestEnum> e2;
 		e2 = e;
 		REQUIRE_FALSE(e.CheckFlag(E_TestEnum::flag1));
 		REQUIRE(e.CheckFlag(E_TestEnum::flag2));
@@ -206,7 +206,7 @@ TEST_CASE("Bit fields", "[BitField]") {
 	}
 
 	SECTION("operator^=(BitField)") {
-		BitField<E_TestEnum> e2;
+		DULib::BitField<E_TestEnum> e2;
 		e2 ^= e; // 0^0 => 0
 		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag1));
 		REQUIRE_FALSE(e2.CheckFlag(E_TestEnum::flag2));
@@ -226,7 +226,7 @@ TEST_CASE("Bit fields", "[BitField]") {
 	}
 
 	SECTION("operator^(BitField)") {
-		BitField<E_TestEnum> e2;
+		DULib::BitField<E_TestEnum> e2;
 		const auto e3 = e2 ^ e; // 0^0 => 0
 		REQUIRE_FALSE(e3.CheckFlag(E_TestEnum::flag1));
 		REQUIRE_FALSE(e3.CheckFlag(E_TestEnum::flag2));
@@ -290,5 +290,11 @@ TEST_CASE("Bit fields", "[BitField]") {
 		e.SetFlag(E_TestEnum::flag1);
 		REQUIRE(static_cast<bool>(e));
 	}
-}
+
+	SECTION("operator<<") {
+		e.SetFlags(E_TestEnum::flag1 | E_TestEnum::flag3);
+		std::ostringstream oss;
+		oss << e;
+
+	}
 }

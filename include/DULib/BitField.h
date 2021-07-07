@@ -196,6 +196,14 @@ private:
 	static constexpr std::size_t usedBits = BitField_UsedBitsCounter<Enum>::usedBits;
 };
 
+template <class CharT, class Traits, class Enum>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
+  const BitField<Enum>& x)
+{
+	os << x.to_string();
+	return os;
+}
+
 } // namespace DULib
 
 template <typename Enum>
