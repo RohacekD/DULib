@@ -155,6 +155,20 @@ public:
 		return *this;
 	}
 
+	[[nodiscard]] std::string to_string(const char zero = '0', const char one = '1') const {
+		std::string ret = "";
+		ret.resize(usedBits);
+		std::fill(ret.begin(), ret.end(), zero);
+		for (int i = usedBits-1; i >= 0; --i)
+		{
+			if ((1 << i)&m_Flags)
+			{
+				ret[usedBits - 1 - i] = one;
+			}
+		}
+		return ret;
+	}
+
 	[[nodiscard]] value_type GetFlags() const noexcept { return m_Flags; }
 protected:
 	value_type m_Flags;

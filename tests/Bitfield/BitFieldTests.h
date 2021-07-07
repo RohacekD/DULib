@@ -278,6 +278,13 @@ TEST_CASE("Bit fields", "[BitField]") {
 		REQUIRE(e.GetFlags() == 15); // only first 4 bits should be set to 1
 	}
 
+	SECTION("to_string(one, zero)") {
+		e.SetFlags(E_TestEnum::flag1 | E_TestEnum::flag3);
+		REQUIRE(e.to_string() == "0101");
+		REQUIRE(e.to_string('*') == "*1*1");
+		REQUIRE(e.to_string('0', 'X') == "0X0X");
+	}
+
 	SECTION("bool()") {
 		REQUIRE_FALSE(static_cast<bool>(e));
 		e.SetFlag(E_TestEnum::flag1);
