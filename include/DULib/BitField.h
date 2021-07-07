@@ -204,6 +204,22 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 	return os;
 }
 
+template <class CharT, class Traits, class Enum>
+std::basic_istream<CharT, Traits>& operator>>(std::basic_istream<CharT, Traits>& is,
+  BitField<Enum>& x) {
+	std::underlying_type_t<Enum> flag = 1;
+	std::size_t pos = 0;
+	x = BitField<Enum>();
+	while (!is.eof() && pos < BitField_UsedBitsCounter<Enum>::usedBits) {
+		char ch = is.get();
+		if(ch == '1')
+			x.SetFlag(static_cast<Enum>(flag));
+		flag <<= 1;
+		pos++;
+	}
+	return is;
+}
+
 } // namespace DULib
 
 template <typename Enum>

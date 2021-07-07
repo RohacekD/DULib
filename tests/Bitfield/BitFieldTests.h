@@ -295,6 +295,34 @@ TEST_CASE("Bit fields", "[BitField]") {
 		e.SetFlags(E_TestEnum::flag1 | E_TestEnum::flag3);
 		std::ostringstream oss;
 		oss << e;
+		REQUIRE(oss.str() == "0101");
+	}
 
+	SECTION("operator>>") {
+		DULib::BitField<E_TestEnum> e2;
+		e2.SetFlags(E_TestEnum::flag1 | E_TestEnum::flag3);
+		std::string bit_string = "0101";
+		std::istringstream bit_stream(bit_string);
+		bit_stream >> e;
+		REQUIRE(e == e2);
+
+		bit_string = "0000";
+		bit_stream = std::istringstream(bit_string);
+		bit_stream >> e;
+		REQUIRE(e.none());
+
+		bit_string = "00001111";
+		bit_stream = std::istringstream(bit_string);
+		bit_stream >> e;
+		REQUIRE(e.none());
+		bit_stream >> e;
+		REQUIRE(e.all());
+
+		e2 = DULib::BitField<E_TestEnum>();
+		e2.SetFlags(E_TestEnum::flag2 | E_TestEnum::flag3 | E_TestEnum::flag4);
+		bit_string = "111";
+		bit_stream = std::istringstream(bit_string);
+		bit_stream >> e;
+		REQUIRE(e == e2);
 	}
 }
