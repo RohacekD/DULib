@@ -1,4 +1,4 @@
-IncludeDir = "include"
+IncludeDir = "%{wks.location}/include"
 
 workspace "DULib"
 	architecture "x64"
@@ -22,6 +22,7 @@ project "DULib"
 
 	files 
 	{
-		IncludeDir.."/**.h",
-		IncludeDir.."/**.cpp"
-	}
+			IncludeDir.."/**.h",
+			IncludeDir.."/**.cpp",
+			"%{wks.location}/util/DULib.natvis",
+		}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Intrinsic Name="bit" Expression="1 &lt;&lt; i">
+    <Parameter Name="i" Type="int"/>
+  </Intrinsic>
+  <Type Name="DULib::BitField&lt;*&gt;">
+    <Intrinsic Name="size" Expression="BitField_UsedBitsCounter&lt;$T1&gt;::usedBits?BitField_UsedBitsCounter&lt;$T1&gt;::usedBits:sizeof($T1)*8" />
+    <Intrinsic Name="none" Expression="m_Flags==0" />
+    <DisplayString Condition="none()">Empty</DisplayString>
+    <Expand>
+      <CustomListItems MaxItemsPerView="5000" ExcludeView="Test">
+        <Variable Name="i" InitialValue="0" />
+        <Size>size()</Size>
+        <Loop>
+          <Break Condition="i == size()" />
+          <Item Condition="m_Flags &amp;bit(i)" Name="{($T1)(bit(i)),en}">($T1)(bit(i)),en</Item>
+          <Item Condition="!(m_Flags &amp;bit(i))" Name="{($T1)(bit(i)),en}">false</Item>
+          <Exec>i++</Exec>
+        </Loop>
+      </CustomListItems>
+    </Expand>
+  </Type>
+</AutoVisualizer>
