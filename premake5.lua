@@ -10,19 +10,19 @@ workspace "DULib"
 		"Release"
 	}
 
-include "tests"
 
-project "DULib"
-	kind "StaticLib"
+	project "DULib"
+		kind "StaticLib"
 
-	includedirs
-	{
-		IncludeDir,
-	}
-
-	files 
-	{
-			IncludeDir.."/**.h",
-			IncludeDir.."/**.cpp",
-			"%{wks.location}/util/DULib.natvis",
+		files 
+		{
+				IncludeDir.."/**.h",
+				IncludeDir.."/**.cpp",
+				"%{wks.location}/util/DULib.natvis",
 		}
+		usage "PUBLIC"
+			includedirs
+			{
+				IncludeDir,
+			}
+	include "tests"

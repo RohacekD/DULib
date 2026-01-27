@@ -5,9 +5,10 @@ project "Tests"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/obj/" .. outputdir .. "/%{prj.name}")
 
+	uses {"DULib"}
+
 	includedirs
 	{
-		"../"..IncludeDir,
 		"../vendor/Catch2/single_include/catch2",
 	}
 
