@@ -32,8 +32,9 @@ jobs:
           submodules: recursive
       - name: Premake
         run: |
-          wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha15/premake-5.0.0-alpha15-linux.tar.gz -O premake.tar.gz
+          wget https://github.com/premake/premake-core/releases/download/v5.0.0-beta8/premake-5.0.0-beta8-linux.tar.gz -O premake.tar.gz
           tar -xf premake.tar.gz
+          chmod +x premake5
           ./premake5 gmake2
       - name: Build
         run: make config=${{ matrix.config.lowerCase }} -j6
