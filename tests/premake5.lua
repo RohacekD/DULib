@@ -18,7 +18,7 @@ project "Tests"
 		"**.cpp"
 	}
 
-	filter "system:linux"
+	filter "action:gmake"
 		links {"gcov"}
 
 		buildoptions {"-fprofile-arcs", "-ftest-coverage", "--coverage"}
