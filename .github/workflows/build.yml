@@ -40,9 +40,10 @@ jobs:
         run: make config=${{ matrix.config.lowerCase }} -j6
       - name: Run tests
         run: ./bin/${{ matrix.config.config }}-linux-x86_64/Tests/Tests
-      - name: Premake
-        run: |
-          gcov ./tests/Bitfield/BitFieldTests.h
+      - name: Check Test Coverage
+        uses: threeal/gcovr-action@v1.2.0
+        with:
+          root: ./include/
           
   MSVC:
     runs-on: windows-latest
