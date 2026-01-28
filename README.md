@@ -7,13 +7,17 @@ DULib evolves from my other projects as mix of utilities I am using across my sc
 ## Integration
 The library is header-only so far. 
 
-#### Premake5
+### Premake5
+Requires [Premake5-beta6](https://github.com/premake/premake-core/releases/tag/v5.0.0-beta6) and newer. 
 ```lua
 workspace "MyWorkspace"
   include "include"
   project "MyProject"
     uses{"DULib"}
 ```
+
+### Natvis
+If you are using Premake5 and include project of DULib it will automatically add `.natvis` file into your solution. Otherwise you need to add [util/DULib.natvis](util/DULib.natvis) into your `.sln`.
 
 ## Bitfields
 
