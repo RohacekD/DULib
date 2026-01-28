@@ -4,6 +4,21 @@
 
 DULib evolves from my other projects as mix of utilities I am using across my school and personal projects.
 
+## Integration
+The library is header-only so far. 
+
+### Premake5
+Requires [Premake5-beta6](https://github.com/premake/premake-core/releases/tag/v5.0.0-beta6) and newer. 
+```lua
+workspace "MyWorkspace"
+  include "include"
+  project "MyProject"
+    uses{"DULib"}
+```
+
+### Natvis
+If you are using Premake5 and include project of DULib it will automatically add `.natvis` file into your solution. Otherwise you need to add [util/DULib.natvis](util/DULib.natvis) into your `.sln`.
+
 ## Bitfields
 
 Bit field class allows you to use bit flags in the intuitive way. This class implements basic binary oprations on the bit flag while maintaining minimal size. The requirement is to match the size of used enum class.

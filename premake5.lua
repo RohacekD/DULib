@@ -1,5 +1,3 @@
-IncludeDir = "include"
-
 workspace "DULib"
 	architecture "x64"
 	cppdialect "C++17"
@@ -10,18 +8,6 @@ workspace "DULib"
 		"Release"
 	}
 
-include "tests"
 
-project "DULib"
-	kind "StaticLib"
-
-	includedirs
-	{
-		IncludeDir,
-	}
-
-	files 
-	{
-		IncludeDir.."/**.h",
-		IncludeDir.."/**.cpp"
-	}
+	include "include"
+	include "tests"

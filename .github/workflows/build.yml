@@ -3,60 +3,71 @@ name: build
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - '**.md'
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - '**.md'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
   GCC:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - {
+            name: "Ubuntu GCC Debug",
+            config: "Debug",
+            lowerCase: "debug",
+          }
+        - {
+            name: "Ubuntu GCC Release",
+            config: "Release",
+            lowerCase: "release",
+          }
     steps:
       - uses: actions/checkout@v2
-      - uses: textbook/git-checkout-submodule-action@master
+        with:
+          submodules: recursive
       - name: Premake
         run: |
-          wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha15/premake-5.0.0-alpha15-linux.tar.gz -O premake.tar.gz
+          wget https://github.com/premake/premake-core/releases/download/v5.0.0-beta8/premake-5.0.0-beta8-linux.tar.gz -O premake.tar.gz
           tar -xf premake.tar.gz
-          ./premake5 gmake2
+          chmod +x premake5
+          ./premake5 gmake
       - name: Build
-        run: make config=debug -j6
+        run: make config=${{ matrix.config.lowerCase }} -j6
       - name: Run tests
-        run: ./bin/Debug-linux-x86_64/Tests/Tests
-#      - name: a
-#        run: |
-#          COVERALLS_REPO_TOKEN="${{ secrets.GITHUB_TOKEN }}"
-#          pip install --user cpp-coveralls
-#          cpp-coveralls -r $(pwd) -i include -b $(pwd)/tests/ --exclude "/usr/*" --exclude-pattern $(pwd)/vendor/ --gcov-options '\-o $(pwd) -lp'
-#      - name: Publish to coveralls.io
-#        uses: coverallsapp/github-action@v1.1.2
-#        with:
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
+        run: ./bin/${{ matrix.config.config }}-linux-x86_64/Tests/Tests
           
   MSVC:
     runs-on: windows-latest
     name: MSVC
-    env:
-      VS_PATH: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\
-      MSBUILD_PATH: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [debug, release]
     steps:
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
       - uses: actions/checkout@v2
-      - name: Get submodules
-        shell: cmd
-        run: |
-          git submodule init
-          git submodule update
+        with:
+          submodules: recursive
       - name: Get premake5
         shell: powershell
         run: |
-          Invoke-WebRequest -Uri "https://github.com/premake/premake-core/releases/download/v5.0.0-alpha15/premake-5.0.0-alpha15-windows.zip" -OutFile "premake.zip"
+          Invoke-WebRequest -Uri "https://github.com/premake/premake-core/releases/download/v5.0.0-beta8/premake-5.0.0-beta8-windows.zip" -OutFile "premake.zip"
           Expand-Archive -Path premake.zip
       - name: Generate solution
         shell: cmd
-        run: premake\premake5.exe vs2019
+        run: premake\premake5.exe vs2022
       - name: Build
         shell: cmd
-        run: '"%MSBUILD_PATH%\MSBuild.exe" DULib.sln /p:Configuration=Debug'
+        run: msbuild DULib.sln /p:Configuration=${{ matrix.configuration }}
       - name: Run tests
-        run: ./bin/Debug-windows-x86_64/Tests/Tests.exe
+        run: ./bin/${{ matrix.configuration }}-windows-x86_64/Tests/Tests.exe

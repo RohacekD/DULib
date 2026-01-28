@@ -5,9 +5,10 @@ project "Tests"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/obj/" .. outputdir .. "/%{prj.name}")
 
+	uses {"DULib"}
+
 	includedirs
 	{
-		"../"..IncludeDir,
 		"../vendor/Catch2/single_include/catch2",
 	}
 
@@ -17,8 +18,8 @@ project "Tests"
 		"**.cpp"
 	}
 
-	filter "system:linux"
-		links {"gcov"}
-
-		buildoptions {"-fprofile-arcs", "-ftest-coverage", "--coverage"}
-		linkoptions { "--coverage" }
+--	filter "action:gmake"
+--		links {"gcov"}
+--
+--		buildoptions {"-fprofile-arcs", "-ftest-coverage", "--coverage"}
+--		linkoptions { "--coverage" }
