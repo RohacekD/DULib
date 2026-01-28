@@ -4,6 +4,17 @@
 
 DULib evolves from my other projects as mix of utilities I am using across my school and personal projects.
 
+## Integration
+The library is header-only so far. 
+
+#### Premake5
+```lua
+workspace "MyWorkspace"
+  include "include"
+  project "MyProject"
+    uses{"DULib"}
+```
+
 ## Bitfields
 
 Bit field class allows you to use bit flags in the intuitive way. This class implements basic binary oprations on the bit flag while maintaining minimal size. The requirement is to match the size of used enum class.
