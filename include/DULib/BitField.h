@@ -2,17 +2,18 @@
 
 #include <type_traits>
 
-#include <cstdio>
-
 namespace DULib {
 /**
- * Mandatory for each enum used in bitField. Define how many bits your BitField gonna use
+ * Mandatory for each enum used in bitField. Define how many bits your BitField going to use
  * Needed for some methods such as all();
  */
 template<typename Enum>
 struct BitField_UsedBitsCounter {
   //static constexpr std::size_t usedBits = ...
 };
+
+template<class Enum>
+static constexpr std::size_t BitField_UsedBitsCounter_v = BitField_UsedBitsCounter<Enum>::usedBits;
 
 /**
  * Define true in order to allow bit operations directly on Enum/bits
@@ -23,16 +24,21 @@ struct enable_BitField_operators {
   static constexpr bool enable = false;
 };
 
+template<class Enum>
+static constexpr auto enable_BitField_operators_v = enable_BitField_operators<Enum>::enable;
 
-template <class Enum, typename = typename std::enable_if<std::is_enum<Enum>::value>::type>
-class BitField {
-	using value_type = typename std::underlying_type<Enum>::type;
+
+template <class Enum, typename = std::enable_if_t<std::is_enum_v<Enum>>>
+class BitField final {
+	using value_type = std::underlying_type_t<Enum>;
 
 public:
 	template <typename = typename std::is_integral<value_type>::type>
 	constexpr BitField() noexcept
 		: m_Flags(0)
 	{
+		static_assert(HasNumBitsDefined<BitField_UsedBitsCounter<Enum>>::value, "You have to define number of used bits. See BitField_UsedBitsCounter.");
+		static_assert(BitField_UsedBitsCounter_v<Enum> <= sizeof(Enum) * 8, "Can't use more bits than available in the underlying type.");
 	}
 
 	constexpr BitField(const Enum bit) noexcept
@@ -113,11 +119,8 @@ public:
 		return *this;
 	}
 
-	constexpr BitField& operator=(const BitField& other) noexcept
-	{
-		m_Flags = other.m_Flags;
-		return *this;
-	}
+	constexpr BitField& operator=(const BitField& other) noexcept = default;
+	constexpr BitField& operator=(BitField&& other) noexcept = default;
 
 	constexpr BitField& operator^=(const BitField other) noexcept {
 		m_Flags ^= other.m_Flags;
@@ -133,7 +136,7 @@ public:
 	[[nodiscard]] constexpr BitField operator~() const noexcept{
 		constexpr auto mask = GetMaskForUnusedBits();
 		// unused bits should be set to 0 all the time so 
-		// negating them and than xoring with mask should set them back to false
+		// negating them and then xor-ing with mask should set them back to false
 
 		BitField ret(*this);
 		ret.m_Flags = (~m_Flags) ^ mask;
@@ -156,7 +159,7 @@ public:
 	}
 
 	[[nodiscard]] std::string to_string(const char zero = '0', const char one = '1') const {
-		std::string ret = "";
+		std::string ret;
 		ret.resize(usedBits);
 		std::fill(ret.begin(), ret.end(), zero);
 		for (int i = usedBits-1; i >= 0; --i)
@@ -175,7 +178,7 @@ protected:
 private:
 	constexpr static value_type GetMaskForUnusedBits() {
 		// todo consteval for C++20 ?
-		return static_cast<value_type>(~((static_cast<value_type>(1u) << (usedBits)) - 1u));;
+		return static_cast<value_type>(~((static_cast<value_type>(1u) << (usedBits)) - 1u));
 	}
 
 	template <typename T>
@@ -192,8 +195,7 @@ private:
 	public:
 		enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
 	};
-	static_assert(HasNumBitsDefined<BitField_UsedBitsCounter<Enum>>::value, "You have to define number of used bits. See BitField_UsedBitsCounter.");
-	static constexpr std::size_t usedBits = BitField_UsedBitsCounter<Enum>::usedBits;
+	static constexpr std::size_t usedBits = BitField_UsedBitsCounter_v<Enum>;
 };
 
 template <class CharT, class Traits, class Enum>
@@ -223,7 +225,7 @@ std::basic_istream<CharT, Traits>& operator>>(std::basic_istream<CharT, Traits>&
 } // namespace DULib
 
 template <typename Enum>
-typename std::enable_if<DULib::enable_BitField_operators<Enum>  ::enable, DULib::BitField<Enum>>::type operator|(Enum lhs, Enum rhs)
+std::enable_if_t<DULib::enable_BitField_operators_v<Enum>, DULib::BitField<Enum>> operator|(Enum lhs, Enum rhs)
 {
 	DULib::BitField<Enum> field(lhs);
 	field.SetFlag(rhs);
@@ -231,9 +233,9 @@ typename std::enable_if<DULib::enable_BitField_operators<Enum>  ::enable, DULib:
 }
 
 template <typename Enum>
-typename std::enable_if<DULib::enable_BitField_operators<Enum>::enable, DULib::BitField<Enum>>::type operator&(Enum lhs, Enum rhs)
+std::enable_if_t<DULib::enable_BitField_operators_v<Enum>, DULib::BitField<Enum>> operator&(Enum lhs, Enum rhs)
 {
-	DULib::BitField<Enum> field();
+	DULib::BitField<Enum> field{};
 	if (lhs == rhs)
 		field.SetFlag(lhs);
 	return field;
