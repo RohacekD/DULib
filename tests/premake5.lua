@@ -18,8 +18,8 @@ project "Tests"
 		"**.cpp"
 	}
 
-	filter "action:gmake"
-		links {"gcov"}
-
-		buildoptions {"-fprofile-arcs", "-ftest-coverage", "--coverage"}
-		linkoptions { "--coverage" }
+--	filter "action:gmake"
+--		links {"gcov"}
+--
+--		buildoptions {"-fprofile-arcs", "-ftest-coverage", "--coverage"}
+--		linkoptions { "--coverage" }
