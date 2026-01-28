@@ -2,7 +2,7 @@
 
 # DULib
 
-DULib evolves from my other projects as mix of utilities I am using across my school and personal projects.
+DULib evolves from my other projects as a mix of utilities I am using across my school and personal projects.
 
 Supported standard C++17 and later.
 ## Integration
@@ -18,11 +18,11 @@ workspace "MyWorkspace"
 ```
 
 ### Natvis
-If you are using Premake5 and include project of DULib it will automatically add `.natvis` file into your solution. Otherwise you need to add [util/DULib.natvis](util/DULib.natvis) into your `.sln`.
+If you are using Premake5 and include the project of DULib, it will automatically add the `.natvis` file into your solution. Otherwise, you need to add [util/DULib.natvis](util/DULib.natvis) into your `.sln`.
 
 ## Bitfields
 
-Bit field class allows you to use bit flags in the intuitive way. This class implements basic binary oprations on the bit flag while maintaining minimal size. The requirement is to match the size of used enum class.
+The bit field class allows you to use bit flags in an intuitive way. This class implements basic binary operations on the bit flag while maintaining minimal size. The requirement is to match the size of used enum class.
 
 ```cpp
 #include <DULib/BitField.h>
@@ -35,14 +35,13 @@ enum class E_TestEnum : std::uint8_t
   flag4 = 8,
 };
 
-// For some operation BitField needs to know how many bits do you actually use from given type
+// For some operation, BitField needs to know how many bits you actually use from the given type
 // e.g. all()
 template<>
 struct DULib::BitField_UsedBitsCounter<E_TestEnum> {
   static constexpr std::size_t usedBits = 4;
 };
 
-static_assert(sizeof(DULib::BitField<E_TestEnum>) == sizeof(std::uint8_t));
 // allows binary operations on enum class, not mandatory
 template <> struct DULib::enable_BitField_operators<E_TestEnum> {
 static constexpr bool enable = true;
@@ -53,6 +52,9 @@ if constexpr (bitfield.CheckFlag(E_TestEnum::flag1))
 {
   ...
 }
+
+// The size of the bitfield does not inflate compared to the enum definition
+static_assert(sizeof(DULib::BitField<E_TestEnum>) == sizeof(std::uint8_t));
 
 // supports simple std::hash for usage with std containers
 DULib::BitField<E_TestEnum> field;
