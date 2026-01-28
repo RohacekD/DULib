@@ -4,6 +4,7 @@
 
 DULib evolves from my other projects as mix of utilities I am using across my school and personal projects.
 
+Supported standard C++17 and later.
 ## Integration
 The library is header-only so far. 
 
