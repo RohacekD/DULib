@@ -54,4 +54,7 @@ if constexpr (bitfield.CheckFlag(E_TestEnum::flag1))
   ...
 }
 
+// supports simple std::hash for usage with std containers
+DULib::BitField<E_TestEnum> field;
+std::hash<DULib::BitField<E_TestEnum>>{}(field)
 ```
