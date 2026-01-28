@@ -237,3 +237,11 @@ std::enable_if_t<DULib::enable_BitField_operators_v<Enum>, DULib::BitField<Enum>
 		field.SetFlag(lhs);
 	return field;
 }
+
+template <class T> struct std::hash<DULib::BitField<T>> {
+	std::size_t operator()(const DULib::BitField<T>& s) const noexcept
+	{
+		auto h1 = std::hash<std::underlying_type_t<T>>{}(s.GetFlags());
+		return h1;
+	}
+};
