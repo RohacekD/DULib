@@ -171,7 +171,7 @@ public:
 protected:
 	value_type m_Flags;
 private:
-	constexpr std::size_t GetUsedBits() const { return BitField_UsedBitsCounter<Enum>::usedBits; }
+	constexpr static std::size_t GetUsedBits() { return BitField_UsedBitsCounter<Enum>::usedBits; }
 	constexpr static value_type GetMaskForUnusedBits() {
 		// todo consteval for C++20 ?
 		static_assert(HasNumBitsDefined<BitField_UsedBitsCounter<Enum>>::value, "You have to define number of used bits. See BitField_UsedBitsCounter.");
