@@ -12,9 +12,6 @@ struct BitField_UsedBitsCounter {
   //static constexpr std::size_t usedBits = ...
 };
 
-template<class Enum>
-static constexpr std::size_t BitField_UsedBitsCounter_v = BitField_UsedBitsCounter<Enum>::usedBits;
-
 /**
  * Define true in order to allow bit operations directly on Enum/bits
  * e.g. Enum::flag1 | Enum::flag2 results in bitfield
@@ -37,8 +34,6 @@ public:
 	constexpr BitField() noexcept
 		: m_Flags(0)
 	{
-		static_assert(HasNumBitsDefined<BitField_UsedBitsCounter<Enum>>::value, "You have to define number of used bits. See BitField_UsedBitsCounter.");
-		static_assert(BitField_UsedBitsCounter_v<Enum> <= sizeof(Enum) * 8, "Can't use more bits than available in the underlying type.");
 	}
 
 	constexpr BitField(const Enum bit) noexcept
@@ -160,13 +155,13 @@ public:
 
 	[[nodiscard]] std::string to_string(const char zero = '0', const char one = '1') const {
 		std::string ret;
-		ret.resize(usedBits);
+		ret.resize(GetUsedBits());
 		std::fill(ret.begin(), ret.end(), zero);
-		for (int i = usedBits-1; i >= 0; --i)
+		for (int i = GetUsedBits() -1; i >= 0; --i)
 		{
 			if ((1 << i)&m_Flags)
 			{
-				ret[usedBits - 1 - i] = one;
+				ret[GetUsedBits() - 1 - i] = one;
 			}
 		}
 		return ret;
@@ -176,9 +171,12 @@ public:
 protected:
 	value_type m_Flags;
 private:
+	constexpr std::size_t GetUsedBits() const { return BitField_UsedBitsCounter<Enum>::usedBits; }
 	constexpr static value_type GetMaskForUnusedBits() {
 		// todo consteval for C++20 ?
-		return static_cast<value_type>(~((static_cast<value_type>(1u) << (usedBits)) - 1u));
+		static_assert(HasNumBitsDefined<BitField_UsedBitsCounter<Enum>>::value, "You have to define number of used bits. See BitField_UsedBitsCounter.");
+		static_assert(BitField_UsedBitsCounter<Enum>::usedBits <= sizeof(Enum) * 8, "Can't use more bits than available in the underlying type.");
+		return static_cast<value_type>(~((static_cast<value_type>(1u) << (BitField_UsedBitsCounter<Enum>::usedBits)) - 1u));
 	}
 
 	template <typename T>
@@ -195,7 +193,6 @@ private:
 	public:
 		enum { value = sizeof(test<T>(0)) == sizeof(YesType) };
 	};
-	static constexpr std::size_t usedBits = BitField_UsedBitsCounter_v<Enum>;
 };
 
 template <class CharT, class Traits, class Enum>
