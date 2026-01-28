@@ -175,8 +175,8 @@ private:
 	constexpr static value_type GetMaskForUnusedBits() {
 		// todo consteval for C++20 ?
 		static_assert(HasNumBitsDefined<BitField_UsedBitsCounter<Enum>>::value, "You have to define number of used bits. See BitField_UsedBitsCounter.");
-		static_assert(BitField_UsedBitsCounter<Enum>::usedBits <= sizeof(Enum) * 8, "Can't use more bits than available in the underlying type.");
-		return static_cast<value_type>(~((static_cast<value_type>(1u) << (BitField_UsedBitsCounter<Enum>::usedBits)) - 1u));
+		static_assert(GetUsedBits() <= sizeof(Enum) * 8, "Can't use more bits than available in the underlying type.");
+		return static_cast<value_type>(~((static_cast<value_type>(1u) << (GetUsedBits())) - 1u));
 	}
 
 	template <typename T>
