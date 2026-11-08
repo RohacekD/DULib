@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <concepts>
 
@@ -15,7 +15,7 @@ concept has_negation = requires(LHS x) { negate(x); };
 template<typename LHS, typename RHS>
 concept has_add = requires (LHS x, RHS y) { add(x, y); };
 template<typename LHS, typename RHS>
-concept has_subtract = requires (LHS x, RHS y) { subtract(x - y); };
+concept has_subtract = requires (LHS x, RHS y) { subtract(x, y); };
 template<typename LHS, typename RHS>
 concept has_multiply = requires (LHS x, RHS y) { multiply(x, y); };
 template<typename LHS, typename RHS>
