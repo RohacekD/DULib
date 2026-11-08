@@ -1,6 +1,6 @@
 workspace "DULib"
 	architecture "x64"
-	cppdialect "C++17"
+	cppdialect "C++20"
 	systemversion "latest"
 
 	configurations{
