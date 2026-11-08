@@ -25,6 +25,33 @@ public:
 		return get() != other.get();
 	}
 
+#pragma region -- assignment operators arithmetics
+	template<typename RHS>
+	constexpr StrongType& operator+=(const RHS& other) requires(has_add<StrongType, RHS>&& std::is_same_v<decltype(add(*this, other)), StrongType>)
+	{
+		m_Value += other.get();
+		return *this;
+	}
+	template<typename RHS>
+	constexpr StrongType& operator-=(const RHS& other) requires(has_subtract<StrongType, RHS>&& std::is_same_v<decltype(subtract(*this, other)), StrongType>)
+	{
+		m_Value -= other.get();
+		return *this;
+	}
+	template<typename RHS>
+	constexpr StrongType& operator/=(const RHS& other) requires(has_divide<StrongType, RHS>&& std::is_same_v<decltype(divide(*this, other)), StrongType>)
+	{
+		m_Value /= other.get();
+		return *this;
+	}
+	template<typename RHS>
+	constexpr StrongType& operator*=(const RHS& other) requires(has_multiply<StrongType, RHS>&& std::is_same_v<decltype(multiply(*this, other)), StrongType>)
+	{
+		m_Value *= other.get();
+		return *this;
+	}
+
+#pragma endregion
 private:
 	Underlaying m_Value;
 };
