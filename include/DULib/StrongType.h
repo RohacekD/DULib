@@ -1,4 +1,6 @@
-﻿#pragma once
+#pragma once
+
+// Credits for the design: JASON TURNER - Strong Types – Better C++ (Keynote)
 
 #include <DULib/OperationConcepts.h>
 
