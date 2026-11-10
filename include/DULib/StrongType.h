@@ -2,8 +2,6 @@
 
 // Credits for the design: JASON TURNER - Strong Types – Better C++ (Keynote)
 
-#include "internals/MacroDefinitions.h"
-
 #include <DULib/OperationConcepts.h>
 #include <DULib/internals/MacroDefinitions.h>
 

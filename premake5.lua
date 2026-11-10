@@ -8,6 +8,14 @@ workspace "DULib"
 		"Release"
 	}
 
+	filter "configurations:Debug"
+		symbols "On"
+		editandcontinue "Off"
+		optimize "Off"
+	filter "configurations:Release"
+		symbols "On"
+		optimize "Full"
+	filter {}
 
 	include "include"
 	include "tests"
