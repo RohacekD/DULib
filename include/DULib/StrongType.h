@@ -12,7 +12,7 @@ struct StrongType {
 public:
 	template<typename... Params>
 	constexpr explicit StrongType(Params&&... params)
-		requires std::is_constructible_v<Underlaying, Params...> : m_Value(std::forward<Underlaying>(params)...) {
+		requires std::is_constructible_v<Underlaying, Params...> : m_Value(std::forward<Params>(params)...) {
 	}
 
 	[[nodiscard]] constexpr const Underlaying& get() const& { return m_Value; }
