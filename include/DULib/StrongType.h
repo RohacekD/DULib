@@ -25,6 +25,10 @@ public:
 		return get() != other.get();
 	}
 
+	[[nodiscard]] auto operator<=>(const StrongType& other) const
+		requires(has_order<StrongType, StrongType>)
+	= default;
+
 #pragma region -- assignment operators arithmetics
 	template<typename RHS>
 	constexpr StrongType& operator+=(const RHS& other) requires(has_add<StrongType, RHS>&& std::is_same_v<decltype(add(*this, other)), StrongType>)

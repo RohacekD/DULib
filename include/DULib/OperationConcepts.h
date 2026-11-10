@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <concepts>
 
@@ -41,6 +41,9 @@ concept has_binary_or = requires (LHS x, RHS y) { binaryOr(x, y); };
 #pragma region -- comparators
 template<typename LHS, typename RHS>
 concept has_equals = requires (LHS x, RHS y) { equals(x, y); };
+
+template<typename LHS, typename RHS>
+concept has_order = requires (LHS x, RHS y) { order(x, y); };
 #pragma endregion
 
 }
