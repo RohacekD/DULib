@@ -81,6 +81,12 @@ template<typename LHS, typename RHS>
 	return decltype(add(x, y)){ std::forward<LHS>(x).get() + std::forward<RHS>(y).get() };
 }
 
+// commutative property +
+template<typename LHS, typename RHS>
+[[nodiscard]] constexpr auto operator+(LHS&& x, RHS&& y) ->decltype(add(y, x)) requires(!has_add<LHS, RHS> && has_add<RHS, LHS>) {
+	return decltype(add(y, x)){ std::forward<LHS>(x).get() + std::forward<RHS>(y).get() };
+}
+
 template<typename LHS, typename RHS>
 [[nodiscard]] constexpr auto operator-(LHS&& x, RHS&& y) ->decltype(subtract(x, y)) requires(has_subtract<LHS, RHS>) {
 	return decltype(subtract(x, y)){ std::forward<LHS>(x).get() - std::forward<RHS>(y).get() };
@@ -89,6 +95,11 @@ template<typename LHS, typename RHS>
 template<typename LHS, typename RHS>
 [[nodiscard]] constexpr auto operator*(LHS&& x, RHS&& y) ->decltype(multiply(x, y)) requires(has_multiply<LHS, RHS>) {
 	return decltype(multiply(x, y)){ std::forward<LHS>(x).get()* std::forward<RHS>(y).get() };
+}
+// commutative property *
+template<typename LHS, typename RHS>
+[[nodiscard]] constexpr auto operator*(LHS&& x, RHS&& y) ->decltype(multiply(y, x)) requires(!has_multiply<LHS, RHS>&& has_multiply<RHS, LHS>) {
+	return decltype(multiply(y, x)){ std::forward<LHS>(x).get()* std::forward<RHS>(y).get() };
 }
 
 template<typename LHS, typename RHS>
