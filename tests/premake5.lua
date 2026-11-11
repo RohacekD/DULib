@@ -12,11 +12,17 @@ project "Tests"
 		"../vendor/Catch2/single_include/catch2",
 	}
 
-	files 
+	files
 	{
 		"**.h",
 		"**.cpp"
 	}
+
+	filter "configurations:Debug"
+		if _ACTION and _ACTION:match("^vs") then
+			buildoptions { "/Ob1" }
+		end
+	filter {}
 
 --	filter "action:gmake"
 --		links {"gcov"}
