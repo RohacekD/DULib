@@ -133,6 +133,13 @@ template<typename LHS, typename RHS>
 	return decltype(divide(x, y)){ underlying_value(std::forward<LHS>(x)) / underlying_value(std::forward<RHS>(y)) };
 }
 #pragma endregion
+
+#pragma region -- modulo
+template<typename LHS, typename RHS>
+[[nodiscard]] constexpr auto operator%(LHS&& x, RHS&& y) ->decltype(modulo(x, y)) requires(has_modulo<LHS, RHS>) {
+	return decltype(modulo(x, y)){ underlying_value(std::forward<LHS>(x)) % underlying_value(std::forward<RHS>(y)) };
+}
+#pragma endregion
 #pragma endregion
 
 #pragma region -- logical
